@@ -13,7 +13,7 @@ Fix for raknet attack issues.
 
 # Code
 
-## Method 2
+## Method 1
 ```cs
 IRawPacket:20(playerid, BitStream:bs) {
     new packetid, rpcid, NumberOfBitsOfData;
