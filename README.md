@@ -18,9 +18,9 @@ Fix for raknet attack issues.
 IRawPacket:20(playerid, BitStream:bs) {
     new packetid, rpcid, NumberOfBitsOfData;
     BS_ReadValue(bs, PR_UINT8, packetid, PR_UINT8, rpcid, PR_CUINT32, NumberOfBitsOfData);
-    if (PacketID == 40 || (NumberOfBitsOfData >= 0x1FFFFF || NumberOfBitsOfData <= 0x80000000 || NumberOfBitsOfData < 0)) {
+    if (packetid == 40 || (NumberOfBitsOfData >= 0x1FFFFF || NumberOfBitsOfData <= 0x80000000 || NumberOfBitsOfData < 0)) {
         printf("Crasher Detected - RPCID: %d, NumberOfBitsOfData: %d", rpcid, NumberOfBitsOfData);
-        BanEx(playerid, "Intento de crashear el server");
+        BanEx(playerid, "Raknet Bot");
         return false;
     }
     return true;
