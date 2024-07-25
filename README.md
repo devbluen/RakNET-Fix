@@ -2,7 +2,7 @@
 Fix for raknet attack issues.
 
 # Credits
-- Full credits to [Dimmy UG](https://github.com/dimmyi) for working hard to find the solution, thanks also to this wonderful team that is **Eagle Vision Brasil**.
+- Full credits to [Dimmy UG](https://github.com/dimmyi) and [Benjes](https://discord.com/users/714694009703890944) | [Benjes - YT](https://www.youtube.com/channel/UCTNDUi-7mRcSr9zXfYiLsuQ) for working hard to find the solution, thanks also to this wonderful team that is **Eagle Vision Brasil**.
 - I don't want credit for this, he deserves it so much.
 
 # Dependencies
@@ -12,17 +12,26 @@ Fix for raknet attack issues.
 - In raknet settings add this: **InterceptIncomingRawPacket = true**
 
 # Code
+
+## Method 2
 ```cs
-
-stock GetDifferenceValue(value1, value2)
-{
-    new difference = value1 - value2;
-    if (difference < 0) difference = -difference;
-    return difference;
+IRawPacket:20(playerid, BitStream:bs) {
+    new packetid, rpcid, NumberOfBitsOfData;
+    BS_ReadValue(bs, PR_UINT8, packetid, PR_UINT8, rpcid, PR_CUINT32, NumberOfBitsOfData);
+    if (PacketID == 40 || (NumberOfBitsOfData >= 0x1FFFFF || NumberOfBitsOfData <= 0x80000000 || NumberOfBitsOfData < 0)) {
+        printf("Crasher Detected - RPCID: %d, NumberOfBitsOfData: %d", rpcid, NumberOfBitsOfData);
+        BanEx(playerid, "Intento de crashear el server");
+        return false;
+    }
+    return true;
 }
+```
 
-IRawPacket:20(playerid, BitStream:bs)
-{
+OR
+
+## Method 2
+```cs
+IRawPacket:20(playerid, BitStream:bs) {
     new rpcid, numberOfBitsOfData;
     BS_ReadValue(bs, 
         PR_IGNORE_BITS, 8,
@@ -41,9 +50,9 @@ IRawPacket:20(playerid, BitStream:bs)
 
         printf("Blocked package: playerid: %d | rpcid: %d | bits used: %d | allocated bits: %d | diff: %d", playerid, rpcid, numberOfBitsOfData, bits, diff);
         BlockIpAddress(blockIp, 60000);
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 ```
